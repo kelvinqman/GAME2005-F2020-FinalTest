@@ -60,6 +60,11 @@ public class PlayerBehaviour : MonoBehaviour
             {
                 // move forward
                 body.velocity = playerCam.transform.forward * speed * Time.deltaTime;
+                //if (Input.GetAxisRaw("Jump") > 0.0f)
+                //{
+                //    body.velocity.y += speed * 0.07f * Time.deltaTime;
+                //}
+                //body.velocity = playerCam.transform.forward * speed * Time.deltaTime;
             }
 
             if (Input.GetAxisRaw("Vertical") < 0.0f) 
@@ -74,7 +79,13 @@ public class PlayerBehaviour : MonoBehaviour
 
             if (Input.GetAxisRaw("Jump") > 0.0f)
             {
-                body.velocity = transform.up * speed * 0.1f * Time.deltaTime;
+                //body.velocity = transform.up * speed * 0.07f * Time.deltaTime;
+                body.velocity.y = speed * 0.07f * Time.deltaTime;
+                if (Input.GetAxisRaw("Vertical") > 0.0f && !blocked)
+                { 
+                    body.velocity.x *= 0.2f;
+                    body.velocity.z *= 0.2f;
+                }
             }
 
             transform.position += body.velocity;
