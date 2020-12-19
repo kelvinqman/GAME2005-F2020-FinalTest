@@ -54,7 +54,7 @@ public class CollisionManager : MonoBehaviour
                 {
                     CheckSphereAABB(sphere, cube);
                 }
-                
+
             }
         }
 
@@ -62,6 +62,23 @@ public class CollisionManager : MonoBehaviour
         {
             CheckBox_Player(player, boxes[i]);
         }
+        int count = 0;
+        for (int i = 0; i < boxes.Length; i++)
+        {
+            CubeBehaviour a = player.cube;
+            CubeBehaviour b = boxes[i].cube;
+            if ((a.min.x <= b.max.x && a.max.x >= b.min.x) &&
+                (a.min.y <= b.max.y && a.max.y >= b.min.y) &&
+                (a.min.z <= b.max.z && a.max.z >= b.min.z))
+            {
+                if (boxes[i].body.bodyType == BodyType.STATIC)
+                {
+                    count++;
+                }
+            }
+        }
+        if(count==0)
+            player.blocked = false;
     }
 
     public static void CheckSphereAABB(BulletBehaviour s, CubeBehaviour b)
@@ -238,34 +255,20 @@ public class CollisionManager : MonoBehaviour
     {
         CubeBehaviour a = player.cube;
         CubeBehaviour b = box.cube;
-        //Contact contactB = new Contact(b);
-
         if ((a.min.x <= b.max.x && a.max.x >= b.min.x) &&
             (a.min.y <= b.max.y && a.max.y >= b.min.y) &&
             (a.min.z <= b.max.z && a.max.z >= b.min.z))
         {
-            if (Input.GetAxisRaw("Horizontal") > 0.0f)
+            if (box.body.bodyType == BodyType.DYNAMIC)
             {
-                // move right
-                box.body.velocity = player.playerCam.transform.right * player.speed * Time.deltaTime;
+                if (Input.GetAxisRaw("Vertical") > 0.0f)
+                {
+                    box.body.velocity = player.playerCam.transform.forward * player.speed * Time.deltaTime;
+                }
             }
-
-            if (Input.GetAxisRaw("Horizontal") < 0.0f)
+            else
             {
-                // move left
-                box.body.velocity = -player.playerCam.transform.right * player.speed * Time.deltaTime;
-            }
-
-            if (Input.GetAxisRaw("Vertical") > 0.0f)
-            {
-                // move forward
-                box.body.velocity = player.playerCam.transform.forward * player.speed * Time.deltaTime;
-            }
-
-            if (Input.GetAxisRaw("Vertical") < 0.0f)
-            {
-                // move Back
-                box.body.velocity = -player.playerCam.transform.forward * player.speed * Time.deltaTime;
+                player.blocked = true;
             }
         }
     }

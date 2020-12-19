@@ -81,7 +81,6 @@ public class CubeBehaviour : MonoBehaviour
     {
         max = Vector3.Scale(bounds.max, transform.localScale) + transform.position;
         min = Vector3.Scale(bounds.min, transform.localScale) + transform.position;
-        //_Move();
     }
 
     private void OnDrawGizmos()
@@ -93,13 +92,4 @@ public class CubeBehaviour : MonoBehaviour
             Gizmos.DrawWireCube(transform.position, Vector3.Scale(new Vector3(1.0f, 1.0f, 1.0f), transform.localScale));
         }
     }
-    //private void _Move()
-    //{
-    //    if (isGrounded)
-    //    {
-    //        body.velocity = Vector3.Lerp(body.velocity, Vector3.zero, 0.9f);
-    //        body.velocity = new Vector3(body.velocity.x, 0.0f, body.velocity.z); // remove y
-    //        transform.position += body.velocity;
-    //    }
-    //}
 }

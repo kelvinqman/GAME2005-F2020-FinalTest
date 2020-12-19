@@ -17,6 +17,7 @@ public class PlayerBehaviour : MonoBehaviour
     public float speed;
     public bool isGrounded;
 
+    public bool blocked;
 
     public RigidBody3D body;
     public CubeBehaviour cube;
@@ -55,7 +56,7 @@ public class PlayerBehaviour : MonoBehaviour
                 body.velocity = -playerCam.transform.right * speed * Time.deltaTime;
             }
 
-            if (Input.GetAxisRaw("Vertical") > 0.0f)
+            if (Input.GetAxisRaw("Vertical") > 0.0f && !blocked)
             {
                 // move forward
                 body.velocity = playerCam.transform.forward * speed * Time.deltaTime;
