@@ -8,6 +8,8 @@ public class CollisionManager : MonoBehaviour
 {
     public CubeBehaviour[] cubes;
     public BulletBehaviour[] spheres;
+    public PlayerBehaviour player;
+    public BoxBehaviour[] boxes;
 
     private static Vector3[] faces;
 
@@ -15,6 +17,8 @@ public class CollisionManager : MonoBehaviour
     void Start()
     {
         cubes = FindObjectsOfType<CubeBehaviour>();
+        player = FindObjectOfType<PlayerBehaviour>();
+        boxes = FindObjectsOfType<BoxBehaviour>();
 
         faces = new Vector3[]
         {
@@ -54,7 +58,10 @@ public class CollisionManager : MonoBehaviour
             }
         }
 
-
+        for (int i = 0; i < boxes.Length; i++)
+        {
+            CheckBox_Player(player, boxes[i]);
+        }
     }
 
     public static void CheckSphereAABB(BulletBehaviour s, CubeBehaviour b)
@@ -183,6 +190,32 @@ public class CollisionManager : MonoBehaviour
                 a.isColliding = true;
                 
             }
+            //if (a.name == "Player" && b.bodyType == DYNAMIC)
+            //{
+            //    if (Input.GetAxisRaw("Horizontal") > 0.0f)
+            //    {
+            //        // move right
+            //        body.velocity = player.playerCam.transform.right * speed * Time.deltaTime;
+            //    }
+
+            //    if (Input.GetAxisRaw("Horizontal") < 0.0f)
+            //    {
+            //        // move left
+            //        body.velocity = -player.playerCam.transform.right * speed * Time.deltaTime;
+            //    }
+
+            //    if (Input.GetAxisRaw("Vertical") > 0.0f)
+            //    {
+            //        // move forward
+            //        body.velocity = player.playerCam.transform.forward * speed * Time.deltaTime;
+            //    }
+
+            //    if (Input.GetAxisRaw("Vertical") < 0.0f)
+            //    {
+            //        // move Back
+            //        body.velocity = -player.playerCam.transform.forward * speed * Time.deltaTime;
+            //    }
+            //}
         }
         else
         {
@@ -197,6 +230,42 @@ public class CollisionManager : MonoBehaviour
                     a.gameObject.GetComponent<RigidBody3D>().isFalling = true;
                     a.isGrounded = false;
                 }
+            }
+        }
+    }
+
+    public static void CheckBox_Player(PlayerBehaviour player, BoxBehaviour box)
+    {
+        CubeBehaviour a = player.cube;
+        CubeBehaviour b = box.cube;
+        //Contact contactB = new Contact(b);
+
+        if ((a.min.x <= b.max.x && a.max.x >= b.min.x) &&
+            (a.min.y <= b.max.y && a.max.y >= b.min.y) &&
+            (a.min.z <= b.max.z && a.max.z >= b.min.z))
+        {
+            if (Input.GetAxisRaw("Horizontal") > 0.0f)
+            {
+                // move right
+                box.body.velocity = player.playerCam.transform.right * player.speed * Time.deltaTime;
+            }
+
+            if (Input.GetAxisRaw("Horizontal") < 0.0f)
+            {
+                // move left
+                box.body.velocity = -player.playerCam.transform.right * player.speed * Time.deltaTime;
+            }
+
+            if (Input.GetAxisRaw("Vertical") > 0.0f)
+            {
+                // move forward
+                box.body.velocity = player.playerCam.transform.forward * player.speed * Time.deltaTime;
+            }
+
+            if (Input.GetAxisRaw("Vertical") < 0.0f)
+            {
+                // move Back
+                box.body.velocity = -player.playerCam.transform.forward * player.speed * Time.deltaTime;
             }
         }
     }
