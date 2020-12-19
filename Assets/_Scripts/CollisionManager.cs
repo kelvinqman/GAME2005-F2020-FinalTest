@@ -120,7 +120,7 @@ public class CollisionManager : MonoBehaviour
             s.collisionNormal = face;
             //s.isColliding = true;
 
-
+            // Apply reflection of Bullet with blocks
             Reflect(s);
         }
 
