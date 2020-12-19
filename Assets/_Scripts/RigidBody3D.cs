@@ -31,15 +31,16 @@ public class RigidBody3D : MonoBehaviour
         gravity = -0.001f;
         velocity = Vector3.zero;
         acceleration = new Vector3(0.0f, gravity * gravityScale, 0.0f);
-        if (bodyType == BodyType.DYNAMIC)
-        {
-            isFalling = true;
-        }
+        
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyUp(KeyCode.V)&&bodyType == BodyType.DYNAMIC)
+        {
+            isFalling = true;
+        }
         if (bodyType == BodyType.DYNAMIC)
         {
             if (isFalling)
