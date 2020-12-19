@@ -14,6 +14,8 @@ public class BulletBehaviour : MonoBehaviour
     public Vector3 collisionNormal;
     public float penetration;
 
+    public CubeBehaviour cube;
+
     public BulletManager bulletManager;
 
     // Start is called before the first frame update

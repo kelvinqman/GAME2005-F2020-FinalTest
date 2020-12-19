@@ -7,7 +7,7 @@ using UnityEngine;
 public class CollisionManager : MonoBehaviour
 {
     public CubeBehaviour[] cubes;
-    public BulletBehaviour[] spheres;
+    public BulletBehaviour[] bullets;
     public PlayerBehaviour player;
     public BoxBehaviour[] boxes;
 
@@ -31,7 +31,7 @@ public class CollisionManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        spheres = FindObjectsOfType<BulletBehaviour>();
+        bullets = FindObjectsOfType<BulletBehaviour>();
 
         // check each AABB with every other AABB in the scene
         for (int i = 0; i < cubes.Length; i++)
@@ -46,13 +46,13 @@ public class CollisionManager : MonoBehaviour
         }
 
         // Check each sphere against each AABB in the scene
-        foreach (var sphere in spheres)
+        foreach (var sphere in bullets)
         {
             foreach (var cube in cubes)
             {
                 if (cube.name != "Player")
                 {
-                    CheckSphereAABB(sphere, cube);
+                    CheckCubeAABB(sphere, cube);
                 }
 
             }
@@ -81,18 +81,16 @@ public class CollisionManager : MonoBehaviour
             player.blocked = false;
     }
 
-    public static void CheckSphereAABB(BulletBehaviour s, CubeBehaviour b)
+    public static void CheckCubeAABB(BulletBehaviour s, CubeBehaviour b)
     {
-        // get box closest point to sphere center by clamping
-        var x = Mathf.Max(b.min.x, Mathf.Min(s.transform.position.x, b.max.x));
-        var y = Mathf.Max(b.min.y, Mathf.Min(s.transform.position.y, b.max.y));
-        var z = Mathf.Max(b.min.z, Mathf.Min(s.transform.position.z, b.max.z));
-
-        var distance = Math.Sqrt((x - s.transform.position.x) * (x - s.transform.position.x) +
-                                 (y - s.transform.position.y) * (y - s.transform.position.y) +
-                                 (z - s.transform.position.z) * (z - s.transform.position.z));
-
-        if ((distance < s.radius) && (!s.isColliding))
+        bool collide=false;
+        if ((s.cube.min.x <= b.max.x && s.cube.max.x >= b.min.x) &&
+            (s.cube.min.y <= b.max.y && s.cube.max.y >= b.min.y) &&
+            (s.cube.min.z <= b.max.z && s.cube.max.z >= b.min.z))
+        {
+            collide = true;
+        }
+        if (collide && (!s.isColliding))
         {
             // determine the distances between the contact extents
             float[] distances = {
@@ -122,13 +120,12 @@ public class CollisionManager : MonoBehaviour
             s.collisionNormal = face;
             //s.isColliding = true;
 
-            
+
             Reflect(s);
         }
 
     }
-    
-    // This helper function reflects the bullet when it hits an AABB face
+
     private static void Reflect(BulletBehaviour s)
     {
         if ((s.collisionNormal == Vector3.forward) || (s.collisionNormal == Vector3.back))
@@ -207,32 +204,6 @@ public class CollisionManager : MonoBehaviour
                 a.isColliding = true;
                 
             }
-            //if (a.name == "Player" && b.bodyType == DYNAMIC)
-            //{
-            //    if (Input.GetAxisRaw("Horizontal") > 0.0f)
-            //    {
-            //        // move right
-            //        body.velocity = player.playerCam.transform.right * speed * Time.deltaTime;
-            //    }
-
-            //    if (Input.GetAxisRaw("Horizontal") < 0.0f)
-            //    {
-            //        // move left
-            //        body.velocity = -player.playerCam.transform.right * speed * Time.deltaTime;
-            //    }
-
-            //    if (Input.GetAxisRaw("Vertical") > 0.0f)
-            //    {
-            //        // move forward
-            //        body.velocity = player.playerCam.transform.forward * speed * Time.deltaTime;
-            //    }
-
-            //    if (Input.GetAxisRaw("Vertical") < 0.0f)
-            //    {
-            //        // move Back
-            //        body.velocity = -player.playerCam.transform.forward * speed * Time.deltaTime;
-            //    }
-            //}
         }
         else
         {
