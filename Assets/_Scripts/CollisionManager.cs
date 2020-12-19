@@ -261,7 +261,7 @@ public class CollisionManager : MonoBehaviour
         {
             if (box.body.bodyType == BodyType.DYNAMIC)
             {
-                if (Input.GetAxisRaw("Vertical") > 0.0f)
+                if (Input.GetAxisRaw("Vertical") > 0.0f&&!(a.min.y>=b.max.y-1.0f))
                 {
                     box.body.velocity = player.playerCam.transform.forward * player.speed * Time.deltaTime;
                 }
